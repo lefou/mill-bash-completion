@@ -32,8 +32,19 @@ _mill()
           --watch' -- "$cur" ) )
     else
 
-        mill_out="$( mill --disable-ticker resolve __._ 2> /dev/null )"
-        COMPREPLY=( $( compgen -W "${mill_out}" -- "$cur" ) )
+        if [[ "$cur" =~ .*[.].* ]]; then
+
+            # already specified a dot, so complete all
+            mill_out="$( mill --disable-ticker resolve __._ 2> /dev/null )"
+            COMPREPLY=( $( compgen -W "${mill_out}" -- "$cur" ) )
+
+        else
+
+            # nothing specified yet
+            mill_out="$( mill --disable-ticker resolve _ _._ 2> /dev/null )"
+            COMPREPLY=( $( compgen -W "${mill_out}" -- "$cur" ) )
+
+        fi
 
     fi
 
